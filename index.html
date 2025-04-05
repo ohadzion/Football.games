@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>שידורי כדורגל ביוטיוב</title>
+  <style>
+    body { font-family: Arial; direction: rtl; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: right; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <h1>שידורי כדורגל בחינם</h1>
+  <table id="data-table">
+    <thead>
+      <tr id="header-row"></tr>
+    </thead>
+    <tbody id="data-body"></tbody>
+  </table>
+
+  <script>
+    const sheetId = "1uJD8jO3LoWVpaCH3z57AU3FKUIt9Xr0B";
+    const sheetName = "Sheet1"; // שים לב לשם הדף בגיליון שלך
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+    fetch(url)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const table = document.getElementById("data-table");
+        const headerRow = document.getElementById("header-row");
+        const body = document.getElementById("data-body");
+
+        // כותרות
+        json.table.cols.forEach(col => {
+          const th = document.createElement("th");
+          th.textContent = col.label;
+          headerRow.appendChild(th);
+        });
+
+        // שורות
+        json.table.rows.forEach(row => {
+          const tr = document.createElement("tr");
+          row.c.forEach(cell => {
+            const td = document.createElement("td");
+            td.textContent = cell ? cell.v : "";
+            tr.appendChild(td);
+          });
+          body.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
